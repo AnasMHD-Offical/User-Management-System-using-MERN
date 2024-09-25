@@ -22,7 +22,7 @@ function LoginPage() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!LoginData.email || !LoginData.password) {
-      handleError("Email and Password required");
+      return handleError("Email and Password required");
     }
     try {
       const url = "http://localhost:8080/admin/login";

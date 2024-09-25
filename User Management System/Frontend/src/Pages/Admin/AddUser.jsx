@@ -4,28 +4,61 @@ import { handleError, handleSuccess } from "../../Utils/tostify";
 import axios from "axios";
 
 function Adduser() {
-    const navigate = useNavigate()
+  const navigate = useNavigate();
   const [NewUserData, SetNewUserData] = useState({
     name: "",
     email: "",
     phone: "",
     password: "",
-    profile : null
+    profile: null,
   });
   // const [profile , setProfile] = useState()
   function handleInputs(e) {
-    const { name, value} = e.target;
+    const { name, value } = e.target;
     SetNewUserData({
       ...NewUserData,
       [name]: value,
     });
   }
-  function handleImageChange(e){
+  function handleImageChange(e) {
     SetNewUserData({
       ...NewUserData,
       profile: e.target.files[0],
     });
   }
+   //regex for validation
+   const EmailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[cC][oO][mM]$/;
+   const NameRegex = /^[A-Za-z ]+$/;
+   const PhoneRegex = /^[0-9]+$/;
+   const PasswordRegex = /^(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]).{6,}$/;
+  
+   const RegexValidation = ()=>{
+     let error = false
+     if(!NameRegex.test(NewUserData.name)){
+       handleError("Name should contain only alphabets")
+       error = true
+     }
+ 
+     if(!EmailRegex.test(NewUserData.email)){
+       handleError("Enter a valid email")
+       error = true
+     }
+     if(!PasswordRegex.test(NewUserData.password)){
+       handleError("Password must be at least 6 characters , include one digit, one special character, and one capital letter")
+       error = true
+     }
+     if(NewUserData.phone.length !== 10){
+       handleError("Phone number must be 10 digit long")
+       error = true
+     }else if(!PhoneRegex.test(NewUserData.phone)){
+       handleError("Phone Number must be numbers ")
+       error = true
+     }if(!NewUserData.profile){
+      handleError("Profile is required")
+       error = true
+     }
+     return error
+   }
   async function handleSubmit(e) {
     e.preventDefault();
     if (
@@ -37,14 +70,15 @@ function Adduser() {
     ) {
       handleError("All fields required");
     }
+    if(!RegexValidation()){
     try {
-    console.log(NewUserData);
-        
+      console.log(NewUserData);
+
       const url = "http://localhost:8080/admin/addUser";
-      const response = await axios.post(url,NewUserData,{
-        headers : {
-          "Content-Type": "multipart/form-data"
-        }
+      const response = await axios.post(url, NewUserData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
       });
       console.log(response);
 
@@ -52,17 +86,18 @@ function Adduser() {
       // const {message,name,email} = UserData
       if (success) {
         handleSuccess(message);
-        navigate("/admin/adminpanel")
+        navigate("/admin/adminpanel");
       }
     } catch (error) {
-      const errorMsg = error?.response?.data?.message
+      const errorMsg = error?.response?.data?.message;
       handleError(errorMsg);
       console.log(errorMsg);
     }
   }
-  const handleHome = () =>{
-    navigate("/admin/adminpanel")
   }
+  const handleHome = () => {
+    navigate("/admin/adminpanel");
+  };
 
   return (
     <>
@@ -173,7 +208,12 @@ function Adduser() {
                 </div>
               </div>
               <div className="flex gap-2">
-                <button onClick={handleHome} className="flex  w-full justify-center rounded-md bg-red-700 px-3 py-2 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-red-100 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-600">Back to dashboard</button>
+                <button
+                  onClick={handleHome}
+                  className="flex  w-full justify-center rounded-md bg-red-700 px-3 py-2 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-red-100 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-600"
+                >
+                  Back to dashboard
+                </button>
                 <button
                   type="submit"
                   className="flex w-full justify-center rounded-md bg-green-600 px-3 py-2 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-green-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-green-600"

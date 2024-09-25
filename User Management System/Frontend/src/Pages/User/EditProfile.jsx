@@ -37,7 +37,6 @@ function EditProfile() {
           email: fetchedData.email || "",
           profile: fetchedData.profile || "",
           phone: fetchedData.phone || "",
-          password: fetchedData.password || "",
         }));
         setUserData((prev) => ({
           ...prev,
@@ -45,7 +44,6 @@ function EditProfile() {
           email: fetchedData.email || "",
           profile: fetchedData.profile || "",
           phone: fetchedData.phone || "",
-          password: fetchedData.password || "",
         }));
         // console.log(userData);
       } catch (error) {
@@ -71,37 +69,70 @@ function EditProfile() {
       profile: e.target.files[0],
     });
   }
+   //regex for validation
+   const EmailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[cC][oO][mM]$/;
+   const NameRegex = /^[A-Za-z ]+$/;
+   const PhoneRegex = /^[0-9]+$/;
+   const PasswordRegex = /^(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]).{6,}$/;
+  
+   const RegexValidation = ()=>{
+     let error = false
+     if(!NameRegex.test(EditedData.name)){
+       handleError("Name should contain only alphabets")
+       error = true
+     }
+ 
+     if(!EmailRegex.test(EditedData.email)){
+       handleError("Enter a valid email")
+       error = true
+     }
+     if(!PasswordRegex.test(EditedData.password)){
+       handleError("Password must be at least 6 characters , include one digit, one special character, and one capital letter")
+       error = true
+     }
+     if(EditedData.phone.length !== 10){
+       handleError("Phone number must be 10 digit long")
+       error = true
+     }else if(!PhoneRegex.test(EditedData.phone)){
+       handleError("Phone Number must be numbers ")
+       error = true
+     }
+     return error
+   }
   async function handleSubmit(e) {
     e.preventDefault();
-    try {
+
       if (
-        EditProfile.name === "" ||
-        EditProfile.email === "" ||
-        EditProfile.password === "" ||
-        EditProfile.phone === "" ||
-        EditProfile.profile === ""
+        EditedData.name === "" ||
+        EditedData.email === "" ||
+        EditedData.password === "" ||
+        EditedData.phone === "" ||
+        EditedData.profile === ""
       ) {
         handleError("All fields required");
       }
-      const url = "http://localhost:8080/edit";
-      const response = await axios.patch(url, EditedData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      });
-      console.log(response);
-
-      const { message, success } = response?.data;
-      // const {message,name,email} = UserData
-      if (success) {
-        handleSuccess(message);
-        navigate("/");
+      if(!RegexValidation()){
+        try {
+          const url = "http://localhost:8080/edit";
+          const response = await axios.patch(url, EditedData, {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+          });
+          console.log(response);
+    
+          const { message, success } = response?.data;
+          // const {message,name,email} = UserData
+          if (success) {
+            handleSuccess(message);
+            navigate("/");
+          }
+        } catch (error) {
+          const errorMsg = error?.response?.data?.message;
+          handleError(errorMsg);
+          console.log(errorMsg);
+        }
       }
-    } catch (error) {
-      const errorMsg = error?.response?.data?.message;
-      handleError(errorMsg);
-      console.log(errorMsg);
-    }
   }
   console.log(EditedData);
 

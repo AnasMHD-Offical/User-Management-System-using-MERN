@@ -26,17 +26,48 @@ function SignupPage() {
       profile: e.target.files[0],
     });
   }
+   //regex for validation
+   const EmailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[cC][oO][mM]$/;
+   const NameRegex = /^[A-Za-z ]+$/;
+   const PhoneRegex = /^[0-9]+$/;
+   const PasswordRegex = /^(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]).{6,}$/;
+  
+   const RegexValidation = ()=>{
+     let error = false
+     if(!NameRegex.test(signupData.name)){
+       handleError("Name should contain only alphabets")
+       error = true
+     }
+ 
+     if(!EmailRegex.test(signupData.email)){
+       handleError("Enter a valid email")
+       error = true
+     }
+     if(!PasswordRegex.test(signupData.password)){
+       handleError("Password must be at least 6 characters , include one digit, one special character, and one capital letter")
+       error = true
+     }
+     if(signupData.phone.length !== 10){
+       handleError("Phone number must be 10 digit long")
+       error = true
+     }else if(!PhoneRegex.test(signupData.phone)){
+       handleError("Phone Number must be numbers ")
+       error = true
+     }
+     return error
+   }
   async function handleSubmit(e) {
     e.preventDefault();
     if (
-      !signupData.name ||
-      !signupData.email ||
-      !signupData.password ||
+      !signupData.name||
+      !signupData.email||
+      !signupData.password||
       !signupData.phone ||
       !signupData.profile
     ) {
       handleError("All fields required");
     }
+    if(!RegexValidation()){
     try {
       const url = "http://localhost:8080/admin/signup";
       const response = await axios.post(url,signupData,{
@@ -57,6 +88,7 @@ function SignupPage() {
       handleError(errorMsg);
       console.log(errorMsg);
     }
+  }
   }
   console.log(signupData);
 
