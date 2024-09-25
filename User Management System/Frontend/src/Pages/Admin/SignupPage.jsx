@@ -1,9 +1,10 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link , useNavigate} from "react-router-dom";
 import { handleError, handleSuccess } from "../../Utils/tostify";
 import axios from "axios";
 
 function SignupPage() {
+  const navigate = useNavigate()
   const [signupData, setSignupData] = useState({
     name: "",
     email: "",
@@ -49,7 +50,7 @@ function SignupPage() {
       // const {message,name,email} = UserData
       if (success) {
         handleSuccess(message);
-        // navigate("/")
+        navigate("/admin/login")
       }
     } catch (error) {
       const errorMsg = error?.response?.data?.error?.details[0]?.message

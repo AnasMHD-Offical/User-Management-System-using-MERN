@@ -7,7 +7,12 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
-import { Link,useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { handleError, handleSuccess } from "../Utils/tostify";
+import axios from "axios";
+import { useState, useEffect } from "react";
+import { useDispatch } from "react-redux";
+import { logout } from "../Store/Slices/UserSlice";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -35,18 +40,44 @@ function createData(no, _id, name, email, phone, profile) {
   return { no, _id, name, email, phone, profile };
 }
 function UserTable({ usersData }) {
-  const navigate = useNavigate()
-  const rows = usersData.map((user, index) => {
+  const dispatch = useDispatch()
+  const navigate = useNavigate();
+  const [Data, setData] = useState([]);
+  useEffect(() => {
+    setData(usersData);
+  }, [usersData]);
+  const rows = Data.map((user, index) => {
     const { _id, name, email, phone, profile } = user;
     const img = profile.split("\\").pop();
     const ImgUrl = `http://localhost:8080/${img}`;
     return createData(index + 1, _id, name, email, phone, ImgUrl);
   });
-const handleEditUser = (id)=>{
-    navigate(`/admin/adminpanel/editUser/${id}`)
+  const handleEditUser = (id) => {
+    navigate(`/admin/adminpanel/editUser/${id}`);
     console.log(`/admin/adminpanel/editUser/${id}`);
-    
-}
+  };
+  const handleDeleteUser = async (id) => {
+    try {
+      const url = `http://localhost:8080/admin/deleteUser/${id}`;
+      const response = await axios.delete(url);
+      const { message, success } = response?.data;
+      if (success) {
+        handleSuccess(message);
+        const ExistingUsers = Data.filter((user) => {
+          if(user._id !== id){
+            return user
+          }
+        });
+        setData(ExistingUsers);
+        dispatch(logout())
+        navigate("/admin/adminpanel");
+      }
+    } catch (error) {
+      const errorMsg = error?.response?.data?.message;
+      handleError(errorMsg);
+      console.log(error);
+    }
+  };
 
   return (
     <TableContainer component={Paper}>
@@ -83,7 +114,7 @@ const handleEditUser = (id)=>{
               <StyledTableCell align="right">
                 <StyledTableCell align="center">
                   <button
-                    onClick={()=>handleEditUser(row._id)}
+                    onClick={() => handleEditUser(row._id)}
                     className="border py-2 px-4 font-semibold rounded-lg shadow-sm text-slate-100 bg-green-600"
                   >
                     Edit
@@ -91,7 +122,7 @@ const handleEditUser = (id)=>{
                 </StyledTableCell>
                 <StyledTableCell align="center">
                   <button
-                    onClick={"/delete"}
+                    onClick={() => handleDeleteUser(row._id)}
                     className="border py-2 px-4 font-semibold rounded-lg shadow-sm text-slate-100 bg-red-700"
                   >
                     Delete

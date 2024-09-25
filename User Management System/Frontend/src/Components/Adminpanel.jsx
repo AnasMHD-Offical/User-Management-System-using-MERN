@@ -76,10 +76,11 @@ function Adminpanel() {
   };
   const handleSearch = (e) =>{
       const term = e.target.value
+
       setSearchTerm(term)
       const search = UsersData.filter(data=>
-            data.name.toLowerCase().includes(term) || 
-            data.email.toLowerCase().includes(term)
+            data.name.toLowerCase().includes(term.toLowerCase()) || 
+            data.email.toLowerCase().includes(term.toLowerCase())
       )
       setSearchData(search)
   }

@@ -88,7 +88,7 @@ function HomePage() {
                 <div className="flex-shrink-0">
                   <img
                     alt="Your Company"
-                    src="../../public/user.png"
+                    src={admin.imageUrl}
                     className="h-8 w-8"
                   />
                 </div>

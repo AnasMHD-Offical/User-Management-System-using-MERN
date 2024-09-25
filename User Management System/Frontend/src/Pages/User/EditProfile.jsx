@@ -4,11 +4,10 @@ import { handleError, handleInfo, handleSuccess } from "../../Utils/tostify";
 import axios from "axios";
 
 function EditProfile() {
-
   const { id } = useParams();
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   const [userData, setUserData] = useState({
-    id : id,
+    id: id,
     name: "",
     email: "",
     profile: "",
@@ -16,7 +15,7 @@ function EditProfile() {
     password: "",
   });
   const [EditedData, setEditedData] = useState({
-    id : id,
+    id: id,
     name: "",
     email: "",
     phone: "",
@@ -30,7 +29,7 @@ function EditProfile() {
         const url = `http://localhost:8080/user/${userData.id}`;
         const response = await axios.get(url);
         const fetchedData = response?.data?.data;
-        console.log(fetchedData,"something fishy");
+        console.log(fetchedData, "something fishy");
 
         setEditedData((prev) => ({
           ...prev,
@@ -75,15 +74,15 @@ function EditProfile() {
   async function handleSubmit(e) {
     e.preventDefault();
     try {
-    if (
-      EditProfile.name === "" ||
-      EditProfile.email === "" ||
-      EditProfile.password === "" ||
-      EditProfile.phone === "" ||
-      EditProfile.profile === ""
-    ) {
-      handleError("All fields required");
-    }
+      if (
+        EditProfile.name === "" ||
+        EditProfile.email === "" ||
+        EditProfile.password === "" ||
+        EditProfile.phone === "" ||
+        EditProfile.profile === ""
+      ) {
+        handleError("All fields required");
+      }
       const url = "http://localhost:8080/edit";
       const response = await axios.patch(url, EditedData, {
         headers: {
@@ -96,10 +95,10 @@ function EditProfile() {
       // const {message,name,email} = UserData
       if (success) {
         handleSuccess(message);
-        navigate("/")
+        navigate("/");
       }
     } catch (error) {
-      const errorMsg = error?.response?.data?.message
+      const errorMsg = error?.response?.data?.message;
       handleError(errorMsg);
       console.log(errorMsg);
     }
@@ -191,7 +190,6 @@ function EditProfile() {
                     name="profile"
                     type="file"
                     onChange={handleImageChange}
-                  
                     className="block w-full bg-sky-50 border-sky-950 rounded-md border-2 py-2 px-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-sky-600 sm:text-sm sm:leading-6"
                   />
                 </div>
@@ -214,7 +212,8 @@ function EditProfile() {
                   />
                 </div>
               </div>
-              <div>
+              <div className="flex gap-2">
+                <button onClick={()=>navigate("/")} className="flex w-full justify-center rounded-md bg-red-700 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-red-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-600">Back to Home</button>
                 <button
                   type="submit"
                   className="flex w-full justify-center rounded-md bg-sky-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-sky-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-600"
