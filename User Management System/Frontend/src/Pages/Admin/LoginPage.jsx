@@ -26,7 +26,9 @@ function LoginPage() {
     }
     try {
       const url = "http://localhost:8080/admin/login";
-      const response = await axios.post(url, {email,password});
+      const response = await axios.post(url, {email,password},{
+        withCredentials:true
+      });
       console.log(response);
       
       const {message,success,token,AdminData} = response?.data

@@ -59,7 +59,9 @@ function UserTable({ usersData }) {
   const handleDeleteUser = async (id) => {
     try {
       const url = `http://localhost:8080/admin/deleteUser/${id}`;
-      const response = await axios.delete(url);
+      const response = await axios.delete(url,{
+        withCredentials:true
+      });
       const { message, success } = response?.data;
       if (success) {
         handleSuccess(message);

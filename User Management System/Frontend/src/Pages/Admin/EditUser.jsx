@@ -26,8 +26,10 @@ function EditUser() {
   useEffect(() => {
     const getUserData = async (req, res) => {
       try {
-        const url = `http://localhost:8080/user/${userData.id}`;
-        const response = await axios.get(url);
+        const url = `http://localhost:8080/admin/user/${userData.id}`;
+        const response = await axios.get(url,{
+           withCredentials:true
+        });
         const fetchedData = response?.data?.data;
         console.log(fetchedData, "something fishy");
 
@@ -117,6 +119,7 @@ function EditUser() {
           headers: {
             "Content-Type": "multipart/form-data",
           },
+          withCredentials:true
         });
   
         const { message, success } = response?.data;

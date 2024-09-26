@@ -26,11 +26,15 @@ function UserLogin() {
     }
     try {
       const url = "http://localhost:8080/login";
-      const response = await axios.post(url, {email,password});
+      const response = await axios.post(url, {email,password},{
+        withCredentials : true
+      });
       console.log(response);
       
       const {message,success,token,UserData} = response?.data
       // const {message,name,email} = UserData
+      console.log(token);
+      
       if(success){
         handleSuccess(message)
         dispatch(setUserData({

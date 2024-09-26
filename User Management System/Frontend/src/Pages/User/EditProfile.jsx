@@ -27,7 +27,9 @@ function EditProfile() {
     const getUserData = async (req, res) => {
       try {
         const url = `http://localhost:8080/user/${userData.id}`;
-        const response = await axios.get(url);
+        const response = await axios.get(url,{
+          withCredentials:true
+        });
         const fetchedData = response?.data?.data;
         console.log(fetchedData, "something fishy");
 
@@ -118,6 +120,7 @@ function EditProfile() {
             headers: {
               "Content-Type": "multipart/form-data",
             },
+            withCredentials:true
           });
           console.log(response);
     

@@ -73,7 +73,8 @@ function SignupPage() {
       const response = await axios.post(url,signupData,{
         headers : {
           "Content-Type": "multipart/form-data"
-        }
+        },
+        withCredentials:true
       } );
       console.log(response);
 
